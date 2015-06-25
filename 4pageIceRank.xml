@@ -1,0 +1,27 @@
+<xml>
+	<page>
+		<title>Chipotle</title>	
+		<id>0</id>
+		<text>Hungry hungry hippo[[Taco Bell]][[IHOP]]</text>
+	</page>
+	<page>
+		<title>Taco Bell</title>	
+		<id>1</id>
+		<text>Hungry hungry hippo[[IHOP]]</text>
+	</page>
+	<page>
+		<title>Mac Do</title>	
+		<id>2</id>
+		<text>Hungry hungry hippo[[Taco Bell]]</text>
+	</page>
+	<page>
+		<title>IHOP</title>	
+		<id>3</id>
+		<text>Hungry hungry hippo[[Mac Do]][[Taco Bell]][[Chipotle]]</text>
+	</page>
+	<page>
+		<title>Denny’s</title>	
+		<id>4</id>
+		<text>OM NOM [[Chipotle]] </text>
+	</page>
+<xml>

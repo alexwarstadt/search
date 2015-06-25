@@ -1,0 +1,171 @@
+<xml>
+<page>
+	<title>
+	Page 0
+	</title>
+	<id>
+	0
+	</id>
+	<text>
+	cat cat cat cat cat cat cat cat
+	</text>
+</page>
+<page>
+	<title>
+	Page 1
+	</title>
+	<id>
+	1
+	</id>
+	<text>
+	cat cat cat cat cat cat cat cat
+	</text>
+</page>
+<page>
+	<title>
+	Page 2
+	</title>
+	<id>
+	2
+	</id>
+	<text>
+cat cat cat cat cat cat cat
+	</text>
+</page>
+<page>
+	<title>
+	Page 3
+	</title>
+	<id>
+	3
+	</id>
+	<text>
+cat cat cat cat cat cat cat cat cat
+	</text>
+</page>
+<page>
+	<title>
+	Page 4
+	</title>
+	<id>
+	4
+	</id>
+	<text>
+cat cat cat cat cat cat cat cat cat cat cat cat
+	</text>
+</page>
+<page>
+	<title>
+	Page 5
+	</title>
+	<id>
+	5
+	</id>
+	<text>
+cat cat cat cat cat cat cat cat cat cat cat cat cat cat
+	</text>
+</page>
+<page>
+	<title>
+	Page 6
+	</title>
+	<id>
+	6
+	</id>
+	<text>
+cat cat cat cat cat cat cat cat cat cat cat cat cat cat cat cat cat cat cat cat cat cat cat cat cat cat cat cat
+	</text>
+</page>
+<page>
+	<title>
+	Page 7
+	</title>
+	<id>
+	7
+	</id>
+	<text>
+cat cat cat cat cat cat cat cat cat cat cat cat dog dog dog dog dog dog dog dog dog
+	</text>
+</page>
+<page>
+	<title>
+	Page 8
+	</title>
+	<id>
+	8
+	</id>
+	<text>
+cat cat cat
+[[Page 1]]
+[[Page 2]]
+[[Page 3]]
+[[Page 4]]
+[[Page 5]]
+[[Page 6]]
+[[Page 7]]
+[[Page 8]]
+[[Page 9]]
+[[Page 10]]
+[[Page 11]]
+[[Page 12]]
+[[Page 13]]
+[[Page 0]]
+
+	</text>
+</page>
+<page>
+	<title>
+	Page 9
+	</title>
+	<id>
+	9
+	</id>
+	<text>
+cat cat
+	</text>
+</page>
+<page>
+	<title>
+	Page 10
+	</title>
+	<id>
+	10
+	</id>
+	<text>
+cat
+	</text>
+</page>
+<page>
+	<title>
+	Page 11
+	</title>
+	<id>
+	11
+	</id>
+	<text>
+cat cat cat 
+	</text>
+</page>
+<page>
+	<title>
+	Page 12
+	</title>
+	<id>
+	12
+	</id>
+	<text>
+cat cat cat cat cat cat cat cat cat cat cat
+	</text>
+</page>
+<page>
+	<title>
+	Page 13
+	</title>
+	<id>
+	13
+	</id>
+	<text>
+cat cat cat cat cat cat cat cat
+	</text>
+</page>
+</xml>

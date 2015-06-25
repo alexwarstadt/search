@@ -1,0 +1,312 @@
+
+Main objects
+
+Our main objects are all companion objects to our classes. They are called Index and Query. We wrote two other classes, Info and Page.
+
+
+
+
+
+
+
+
+
+
+
+
+Overview
+
+Our program performs two primary tasks: indexing and querying. The Index and Page classes are used in indexing and the Query and Info classes are used in querying. 
+
+In order to initiate indexing, the user runs the Index class from terminal with three arguments: the path of the corpus xml file, the name of the index file to be written to, and the name of the titles file to be written to. The main method in our index class creates a new instance of an Index. Every time an Index is instantiated, a series of methods is called in order to assign values to various fields listed at the top of the class.
+
+First, parseXML is called in order to assign values to two hash tables: one which maps page ids to page objects (to be discussed below), and a second which maps page titles to their ids. parseXML is so named because it begins by reading the XML from the inputted file into a sequence of XML nodes with the tag <page>, each corresponding to one page in the corpus. It then iterates through each page, extracting the title and ID from the XML and creating an instance of our Page class out of each. Finally, it builds the two hash tables from titles to IDs, and from IDs to pages.
+
+The Page class takes in its constructor the ID (an Int), the title (a string), and the text (a string) of the page. It has additional fields that are assigned by calling methods.
+
+First, a hash table mapping each unique word in the page to its document frequency is assigned by the method wordCounts (which returns this hashmap). This method begins by splitting the text at non-alphanumeric characters and stemming the words. It then iterates through each token, adding it to the hashTable if it does not appear already, and incrementing its frequency by 1 if it is already found.
+
+Next, an arraybuffer of links is built by the method getLinks (which returns the arraybuffer). Each link stored as the string found in the text. The links are found by matching the text with a regular expression that searches for double square brackets. 
+
+Finally, the euclidean normalization field is assigned by the euclidCount method (which returns a double). The method uses the hashmap of document frequencies to square the frequencies of all the unique words in the page, add them, and take the square root.
+
+Now returning to the Index class, one all the pages have been built, the field at the top of the class for a rather complex hashmap is assigned by the method scoreHash. This method iterates through all the pages, using their hashmaps of document frequencies to build a hashmap from unique words in the corpus to linked list containing tuples of page IDs following by their document scores for each word. The document score is calculated using the document frequency stored in the page’s hashmap and the Euclidean normalization stored in the page.
+
+The final field, a hashmap from page IDs to iceRank scores, is assigned by the method generateRank. This method uses the iterative algorithm for calculating iceRank. It iterates through all of the pages, building the hashmap by accessing the arraybuffers of links stored in each page.
+
+The last step of indexing is that the main method calls createFile. This method writes the hashmap from words to linked lists of page indices and document scores to the filename passed in as the first argument. It also stores each word with its inverse document frequency, calculated using the length of the linked list of document scores. In writing the file, every entry in the hashmap is separated with a newline, keys and values with tabs, linked list elements with dollar signs, tuple elements with ampersands. Then, the hashmap from titles to IDs and from IDs to iceRanks are written to the second filename in a similar manner. The two hashmaps are separated by a sequence of percent signs.
+
+The user initiates querying by running the Query class from terminal the optional argument --ice-rank, to indicate they are not using ice rank, and the file paths of the titles and index files created by indexing for the corpus they want to search.
+
+The main method instantiates a Query object. First the fields of two hashmaps are assigned by the method createTitle. These hashmaps are read from the inputted titles file. The first is from IDs to iceRanks, and the second from IDs to titles (note this is the reverse of how it was written).
+
+Similarly, the field for the index hashmap is assigned by a method createIndex, which reads in the inputted file to build the hashmap. This hashmap maps IDs with Info, a class we wrote. The Info class takes in its constructor the string from the file corresponding to the value of the index hashmap. It then parses that string and assigns its two fields for idf and an array of ID, document scores tuples in the method parseInfo.
+
+Now, the method runQuery is called from main. This method contains a while loop that runs as long as a boolean value indicating that the user has not inputted :quit is true. At each loop, runQuery calls the method getInput, which prompts the user for input and reads their response from terminal, also checking whether they have inputted :quit. runQuery then calls lookUp on the value returned by getInput.
+
+lookUp builds a hashmap from IDs to scores for the page at that ID for the given query. The hashmap is updated as each word in the query is considered, using the insertScores method in the Info class. This method finds each ID stored in the linked list of the Info in the hashmap built by and uses the document score at that ID to update the master score in this hashmap.
+
+If the user has not passed in the --ice-rank argument, the method iceRank is called, which multiplies each score in the master hashmap produced by lookUp by each page’s iceRank.
+
+Finally, the method topTen builds a priority queue out of all the pairs of IDs and scores in this master hashtable, sorting by score, and then pops off the top ten, printing them to the terminal. Another query is then possible.
+
+
+
+
+
+
+
+
+
+Possible Bugs
+
+We are not sure iceRank works properly on a very small example of XML of our own writing.
+
+Also, our priority queue has some weird behavior on this small example. Its ordering is erratic. Searches seem intelligent on the corpuses, though.
+
+
+
+
+
+
+
+
+
+Collaborators
+
+Just us!
+
+
+
+
+
+
+
+TESTING
+
+
+query: civilization
+
+
+With iceRank                        
+1: Service d'exploitation de la formation 
+a?ronautique
+2: War
+3: Military history
+4: Index of history articles
+5: United States
+6: History
+7: Ancient Carthage
+8: Carthage
+9: Index of United States?related articles
+10: Anachronism
+Ancient Carthage: 0.10637673645433765
+Carthage: 0.05264926492656
+Index of United… 0.015604061329449343
+
+
+Without iceRank
+1: Service d'exploitation de la formation a?ronautique
+2: War
+3: Military history
+4: Index of history articles
+5: History
+6: United States
+7: Ancient Carthage
+8: Index of United States?related articles
+9: Anachronism
+10: Utica, Tunisia
+Ancient Carthage: 0.0001491
+Index of United…: 0.0000219
+Carthage: 0.00004211902
+
+
+calculations for idf, and individual frequencies work
+iceRank - 4 doc xml make sure they all have the right relative iceRank
+(for each of the criteria)
+runQuery without iceRank which should give one value
+run with iceRank that should give significant difference
+The word doesn’t exist in the corpus -> print out 0
+4 document with the word -> print out only 4
+ErrorCatching - put it a wrong file ---> NumberFormat
+-run query & index on improper format - not xml
+-run query & index on files that don’t exist
+//Do we have to assume that our txt files can be wrong
+Xml corpus with empty page -> 1) no page 2) empty text 3) empty titles 4) empty ids
+writing to not txt files
+
+13 documents with the word -> still print out 10
+13page.xml
+
+
+Word doesn’t exist in corpus -> I’m sorry this word does not exist in this corpus
+
+IceRank : 13page.xml (6.1.3)
+Page 8 has the most links, since it links to everything - its iceRank is not as high as its links are then not as important.
+
+4pageIceRank (6.1.1 Number of Links)
+Taco Bell has the most links going to it, so it should have a high rank
+
+4pageIceRank (6.1.2 Authority)
+As Taco Bell should have the largest authority in one of the iterations, then IHOP’s score will become larger, as it is linked to by a page with the larges authority.
+
+4pageIceRank (6.1.4 Reachability)
+As Mac Do is only reachable by one link, so though it is linked to by something (IHOP), it will have a higher rank than a page that has no links to it (Denny’s). BUT, it will have a lower rank than the other pages, as Mac Do’s reachability is very low, as it is only connected to by one page, while all the other have multiple links to them.
+
+
+
+INDEXING
+cat    -0.06899287148695143$0&2.5298221281347035$6&5.11207720338155$12&3.6666666666666665$3&2.7136021011998728$9&Infinity$10&0.5773502691896258$1&2.5298221281347035$7&3.2071349029490928$4&3.2071349029490928$13&2.5298221281347035$5&4.041451884327381$2&3.1304951684997055$11&3.0$8&0.40451991747794525
+2    1.9459101490553132$8&0.13483997249264842
+5    1.9459101490553132$8&0.13483997249264842
+12    1.9459101490553132$8&0.13483997249264842
+8    1.9459101490553132$8&0.13483997249264842
+7    1.9459101490553132$8&0.13483997249264842
+1    1.9459101490553132$8&0.13483997249264842
+4    1.9459101490553132$8&0.13483997249264842
+11    1.9459101490553132$8&0.13483997249264842
+page    1.9459101490553132$8&1.8877596148970779
+6    1.9459101490553132$8&0.13483997249264842
+0    1.9459101490553132$8&0.13483997249264842
+9    1.9459101490553132$8&0.13483997249264842
+10    1.9459101490553132$8&0.13483997249264842
+3    1.9459101490553132$8&0.13483997249264842
+13    1.9459101490553132$8&0.13483997249264842
+
+these are the expected values. Only page 8 has these numbers, and only 1 appearance of each. Cat is contained in each a variable number of times.
+
+
+
+
+QUERYING
+Enter your query
+page
+1: Page 8
+
+this is the only page with the word “page”
+
+Without iceRank resonable output for: chomsky
+Enter your query
+chomsky
+1: Noam Chomsky
+2: History of Lebanon
+3: Propaganda
+4: Media bias
+5: July 1
+6: Media studies
+7: Leonard Bloomfield
+
+
+good results without ice rank
+jam
+1: Jamming
+2: Jamaica
+3: No Logo
+4: Grateful Dead
+5: Fighter aircraft
+6: Kareem Abdul-Jabbar
+7: Son of Godzilla
+8: Kumquat
+9: Playing card
+10: Ride the Lightning
+
+linguist
+1: Linguist (disambiguation)
+2: Leonard Bloomfield
+3: Noam Chomsky
+4: Morphology (linguistics)
+5: Grammatical gender
+6: Philology
+7: Eduardo Blasco Ferrer
+8: Franz Boas
+9: Enjambment
+10: Hausa language
+
+without ice rank
+united states
+1: Imperial units
+2: Gauss (unit)
+3: Inch
+4: Joule
+5: Michigan
+6: Finite-state machine
+7: Illinois
+8: Ohio
+9: Louisiana
+10: Pennsylvania
+
+with ice rank
+united states
+1: Imperial units
+2: Gauss (unit)
+3: Inch
+4: Joule
+5: Finite-state machine
+6: Michigan
+7: Illinois
+8: Louisiana
+9: Pennsylvania
+10: Ohio
+
+with ice rank
+bach
+1: List of compositions by Johann Sebastian Bach
+2: Fugue
+3: Isaac Stern
+4: Leipzig
+5: Georg Philipp Telemann
+6: Johann Tobias Krebs
+7: Gerard Hengeveld
+8: Harpsichord
+9: Johann Friedrich Agricola
+10: NBA (disambiguation)
+
+
+
+QUITTING
+
+:quit quits
+Enter your query
+:quit
+mslab2f-l /gpfs/main/home/awarstad/course/cs018/workspace/scalaproject/src $
+
+quit doesn't quit
+Enter your query
+quit
+1: Foonly
+2: Mohandas Karamchand Gandhi
+3: Malcolm Fraser
+4: Kyle MacLachlan
+5: Grand Unified Theory
+6: Cuisine of the Midwestern United States
+7: MPEG-1
+8: Franz Boas
+9: Poker equipment
+10: Kepler's laws of planetary motion
+
+control-D
+Enter your query
+Invalid input. Try again!
+
+
+
+
+
+
+ERROR CATCHING
+
+file not found:  
+/gpfs/main/home/awarstad/course/cs018/workspace/scalaproject/src $ scala search.Index 13page.xml 13pageIndex.dat 13pageTitles.dat
+File not found!
+
+bad file
+ /gpfs/main/home/awarstad/course/cs018/workspace/scalaproject/src $ scala search.Query --ice-rank 13pageTitles.dat 13pageIndex.dat
+You put in a bad file
+
+bad xml
+mslab2f-l /gpfs/main/home/awarstad/course/cs018/workspace/scalaproject/src $ scala search.Index EmptyTitles.xml EmptyTitles.dat EmptyIndex.xml
+Bad input file
+
+xml parse exception
+/gpfs/main/home/awarstad/course/cs018/workspace/scalaproject/src $ scala search.Index 4pageIceRank.xml EmptyTitles.dat EmptyIndex.xml
+Bad input file
